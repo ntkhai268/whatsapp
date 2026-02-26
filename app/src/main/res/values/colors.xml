@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primary">#5B5FC7</color>
+    <color name="primary_dark">#4A4EB5</color>
+    <color name="primary_light">#E8E8F5</color>
+    <color name="accent">#5B5FC7</color>
+
+    <!-- Background Colors -->
+    <color name="background_white">#FFFFFF</color>
+    <color name="background_light">#F8F9FA</color>
+    <color name="background_sidebar">#F5F6FA</color>
+    <color name="background_chat_bubble_sent">#5B5FC7</color>
+    <color name="background_chat_bubble_received">#F0F0F5</color>
+    <color name="background_input">#F5F5F5</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#1A1A2E</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_hint">#9CA3AF</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="online_green">#22C55E</color>
+    <color name="unread_badge">#5B5FC7</color>
+    <color name="status_pending">#F59E0B</color>
+    <color name="status_error">#EF4444</color>
+
+    <!-- Divider -->
+    <color name="divider">#E5E7EB</color>
+    <color name="border">#E5E7EB</color>
+
+    <!-- Basic -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Tab -->
+    <color name="tab_selected">#5B5FC7</color>
+    <color name="tab_unselected">#9CA3AF</color>
+
+    <!-- Card -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_stroke">#E5E7EB</color>
+
+    <!-- Button -->
+    <color name="button_primary">#5B5FC7</color>
+    <color name="button_outline">#E5E7EB</color>
+    <color name="button_danger">#EF4444</color>
+    <color name="button_danger_bg">#FEF2F2</color>
+</resources>
