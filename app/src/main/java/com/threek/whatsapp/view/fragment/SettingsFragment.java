@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.threek.whatsapp.R;
-import com.threek.whatsapp.auth.AuthRepository;
+import com.threek.whatsapp.repository.AuthRepository;
 import com.threek.whatsapp.view.activity.LoginActivity;
 import com.threek.whatsapp.viewmodel.SettingsViewModel;
 

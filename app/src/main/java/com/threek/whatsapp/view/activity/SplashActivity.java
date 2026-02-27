@@ -8,7 +8,7 @@ import android.os.Looper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.threek.whatsapp.R;
-import com.threek.whatsapp.auth.AuthRepository;
+import com.threek.whatsapp.repository.AuthRepository;
 
 /**
  * Splash screen — checks auth state and routes to Login or Main.

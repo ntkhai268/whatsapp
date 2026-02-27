@@ -13,8 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.threek.whatsapp.R;
-import com.threek.whatsapp.auth.AuthRepository;
-import com.threek.whatsapp.auth.AuthViewModel;
+import com.threek.whatsapp.repository.AuthRepository;
+import com.threek.whatsapp.viewmodel.AuthViewModel;
 
 import net.openid.appauth.AuthorizationException;
 import net.openid.appauth.AuthorizationResponse;

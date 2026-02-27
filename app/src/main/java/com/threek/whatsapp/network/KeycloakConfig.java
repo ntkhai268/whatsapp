@@ -1,4 +1,4 @@
-package com.threek.whatsapp.auth;
+package com.threek.whatsapp.network;
 
 /**
  * Keycloak server configuration.

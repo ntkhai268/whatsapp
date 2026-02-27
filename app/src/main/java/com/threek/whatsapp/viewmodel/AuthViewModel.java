@@ -1,4 +1,4 @@
-package com.threek.whatsapp.auth;
+package com.threek.whatsapp.viewmodel;
 
 import android.app.Application;
 
@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.threek.whatsapp.repository.AuthRepository;
 
 /**
  * ViewModel for authentication state management.
