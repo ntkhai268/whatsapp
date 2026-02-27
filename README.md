@@ -135,46 +135,179 @@ Như đã nói, Android dùng `RecyclerView`, yêu cầu phải có Adapter hư�
 
 ---
 
-## 📋 Phần 2: Kế Hoạch & Phân Chia Công Việc
+## 📋 Phần 2: Kế Hoạch & Phân Chia Công Việc (Cân bằng Mobile)
 
-Nhiệm vụ trọng tâm của đồ án không phải là làm lại UI (vì đã có sẵn), mà là **tạo Server thật** và **thay thế dữ liệu giả (Mock) thành dữ liệu thật (API)** từ backend đó.
+Vì là đồ án môn học Android, **TẤT CẢ thành viên đều bắt buộc phải có phần đóng góp code Mobile**. Tuy nhiên, để tận dụng thế mạnh từng người, nhóm sẽ có **1 Mobile Lead (gánh phần UI/logic khó nhất của app)** và **3 thành viên còn lại tập trung làm Backend/Service nhưng vẫn sẽ code các màn hình Mobile cơ bản** để hiểu rõ cách app hoạt động.
 
-### 👤 Thành Viên 1: Backend Developer (Trọng tâm)
-Thiết kế và xây dựng Server để Mobile App kết nối vào.
-*   **Công nghệ:** Spring Boot, PostgreSQL/MySQL, Keycloak Server (Docker/Local).
-*   **Nhiệm vụ chính:** 
-    * Xây dựng DB chứa Bảng User, Bảng Tin Nhắn, Bảng Chat.
-    * Tạo các REST API (`/api/users`, `/api/conversations/...`).
-    * Setup WebSocket Server để bắn event tin nhắn thời gian thực.
-    * Gắn Keycloak dùng cho việc định danh.
-    * Hỗ trợ API cho các tính năng tìm kiếm và thông báo.
+### 👤 Thành Viên 1: Mobile Lead (Khai)
+Cân phần lõi của ứng dụng Mobile.
+*   **Công nghệ:** Android MVVM, Room Database, Glide, Camera Intent.
+*   **Nhiệm vụ Mobile (Nặng):**
+    *   Xây dựng kiến trúc dự án (Đã xong phần khung).
+    *   Xử lý màn hình cực khó: `ConversationActivity` (Khung chat nhắn tin thực tế, bàn phím không che tin nhắn) và `MessageAdapter` (Tin nhắn văn bản/hình ảnh 2 bên).
+    *   Sử dụng thư viện `Room` Database lưu local tin nhắn offline.
+    *   Xử lý phần Media: Truy cập Bộ sưu tập/Camera để upload Avatar và chụp ảnh.
+    *   Hỗ trợ review code Android cho 3 bạn còn lại.
 
-### 👤 Thành Viên 2: API Integration (Thợ nối ống)
-Xoá bỏ `MockData`, đấu nối Mobile với Backend thật.
-*   **Công nghệ:** Retrofit2, OkHttp3, Gson.
-*   **Nhiệm vụ chính:**
-    * Sửa thông số trong `KeycloakConfig` trỏ tới Server thật.
-    * Tạo `ApiService.java` chứa các Endpoint API giống hệt Server cung cấp.
-    * Vào thư mục `repository/` để xóa code tĩnh, viết lại bằng hàm `enqueue()` của Retrofit.
-    * Bắt các sự kiện Loading, Error để đổi giao diện `ViewModel`.
+### 👤 Thành Viên 2: Backend Core (Kiên)
+Lo Database và Server gốc
+*   **Công nghệ:** Spring Boot, PostgreSQL, Keycloak Server.
+*   **Nhiệm vụ Backend:**
+    *   Thiết kế CSDL (PostgreSQL), xây dựng Server Spring Boot chứa REST API cơ bản (User, Conversation).
+    *   Cấu hình Keycloak Server để quản lý tài khoản.
+*   **Nhiệm vụ Mobile:**
+    *   Tự thiết kế/tinh chỉnh file giao diện tĩnh (XML) cho màn hình Hồ sơ cá nhân (`MyProfileFragment`, `UserProfileActivity`).
+    *   Ghép API: Gọi `GET` để lấy thông tin của mình hiện lên app, gọi `PUT` gửi thông tin cập nhật lên server.
 
-### 👤 Thành Viên 3: UI Polish & Media (Chuyên gia Hình ảnh)
-Nâng cấp đồ họa và xử lý mảng Media (chụp/nhận file tải lên).
-*   **Công nghệ:** Glide, Android Intent (Camera/Gallery).
-*   **Nhiệm vụ chính:**
-    * Đưa thư viện Glide vào dự án để thay thế việc load ảnh nội bộ bằng load ảnh qua URL (`User.java` sửa `avatarResId` thành `avatarUrl`).
-    * Viết tính năng bấm đổi Avatar `MyProfileFragment`, Upload ảnh máy ảnh.
-    * Bổ sung Skeleton Loading và các animation chuyển trang cho app có cảm giác xịn xò.
-    * Nâng cấp `MessageAdapter` hiển thị được loại tin nhắn hình ảnh.
+### 👤 Thành Viên 3: API Integration (Khôi)
+Thợ nối ống mạng, kiêm luôn màn hình danh sách.
+*   **Nhiệm vụ Mạng/Backend:**
+    *   Thiết lập mạng tĩnh: `RetrofitClient`, `ApiService`, truyền Token của Keycloak vào Header (`AuthInterceptor`).
+    *   Viết API trên Spring Boot cho tính năng Nhóm (Groups) và Lời mời kết bạn (Friend Requests).
+*   **Nhiệm vụ Mobile:**
+    *   Làm quen với kỹ thuật Danh sách trong Android (`RecyclerView`, `Adapter`).
+    *   Đảm nhận màn hình Danh bạ (`ContactsFragment`) và Kết bạn (`FriendRequestActivity`). 
+    *   Ghép API: Gọi server lấy danh sách bạn bè dạng mảng JSON và đổ dữ liệu đó lên Adapter để sinh ra danh sách hiển thị trên app.
 
-### 👤 Thành Viên 4: Real-time Messaging (Real-time Kỹ sư)
-Làm cho app "Sống".
-*   **Công nghệ:** OkHttp WebSocket, FCM (Firebase Cloud Messaging), Room.
-*   **Nhiệm vụ chính:**
-    * Viết client WebSocket bằng OkHttp kết nối đến Backend Server.
-    * Làm trạng thái "Đang gõ... (Typing)" và "Trực tuyến (Online)".
-    * Xử lý Push Notification khi có tin nhắn tới (nếu không mở app) bằng Firebase FCM.
-    * (Nâng cao) Dùng thư viện `Room` Database lưu tạm tin nhắn offline.
+### 👤 Thành Viên 4: Real-time (Đức)
+Giữ kết nối liên tục, làm chức năng thông báo.
+*   **Công nghệ:** WebSocket, Firebase Cloud Messaging (FCM).
+*   **Nhiệm vụ Realtime:**
+    *   Code WebSocket Server trên Spring Boot. 
+    *   Code hệ thống FCM để bắn Push Notification về máy (Server-side).
+*   **Nhiệm vụ Mobile:**
+    *   Khởi tạo `WebSocketClient` bên phía Android, lắng nghe sự kiện "có tin nhắn mới".
+    *   Ghép tính năng "Đang gõ..." (Typing indicator) và đổi trạng thái "Trực tuyến".
+    *   Đảm nhận màn hình Danh sách chat (`ChatListFragment`). Khi có tin nhắn mới báo về qua WebSocket thì sắp xếp lại danh sách đẩy cuộc hội thoại lên trên cùng.
+    *   Hiển thị thông báo (Notification) trên thanh trạng thái điện thoại khi để app chạy ngầm.
+---
+
+### 🗺️ Roadmap phát triển (6 Sprint × 1 tuần)
+
+Mỗi Sprint kéo dài **1 tuần**. Cuối mỗi Sprint, nhóm họp nhanh 15 phút để demo tiến độ và merge code vào `develop`.
+
+```mermaid
+gantt
+    title Roadmap WhatsApp Clone
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d/%m
+
+    section Khai (Mobile Lead)
+    Architecture & Navigation         :a1, 2026-03-03, 7d
+    ConversationActivity UI           :a2, after a1, 7d
+    MessageAdapter (text + image)     :a3, after a2, 7d
+    Camera & Gallery upload           :a4, after a3, 7d
+    Glide + Animations + Loading      :a5, after a4, 7d
+    Room Database offline cache       :a6, after a5, 7d
+
+    section Kiên (Backend)
+    Spring Boot + PostgreSQL + Keycloak :b1, 2026-03-03, 7d
+    User APIs (me, search, contacts)   :b2, after b1, 7d
+    Chat APIs (conversations, messages):b3, after b2, 7d
+    (Mobile) Học XML Layout cơ bản     :b4, after b3, 7d
+    (Mobile) Profile GET hiển thị      :b5, after b4, 7d
+    (Mobile) Profile PUT cập nhật      :b6, after b5, 7d
+
+    section Khôi (API Integration)
+    Retrofit + OkHttp + ApiService      :c1, 2026-03-03, 7d
+    Backend APIs (Group, Friend)        :c2, after c1, 7d
+    AuthInterceptor + Token refresh     :c3, after c2, 7d
+    (Mobile) Học RecyclerView + Adapter :c4, after c3, 7d
+    (Mobile) ContactsFragment ghép API  :c5, after c4, 7d
+    (Mobile) FriendRequestActivity      :c6, after c5, 7d
+
+    section Đức (Real-time)
+    WebSocket Server (Spring Boot)     :d1, 2026-03-03, 7d
+    FCM Server-side setup              :d2, after d1, 7d
+    (Mobile) WebSocket Client Android  :d3, after d2, 7d
+    (Mobile) FCM nhận Push Notification:d4, after d3, 7d
+    (Mobile) Typing + Online indicator :d5, after d4, 7d
+    (Mobile) ChatListFragment realtime :d6, after d5, 7d
+```
+
+---
+
+#### 🏃 Sprint 1 — Nền móng (Tuần 1)
+> Mục tiêu: Mỗi người dựng xong "xương sống" phần mình phụ trách.
+
+| Thành viên | Việc cần làm | Output kiểm tra |
+|---|---|---|
+| **Khai** | Rà soát lại Architecture, fix bug nếu có. Hoàn thiện Navigation giữa các Fragment/Activity | App chạy được, chuyển tab mượt |
+| **Kiên** | Init dự án Spring Boot, tạo DB PostgreSQL, cấu hình Keycloak (Realm + Client) | Server start không lỗi, Keycloak login được |
+| **Khôi** | Thêm Retrofit + Gson dependency, tạo `RetrofitClient.java` + `ApiService.java` interface rỗng | Build thành công, class tồn tại |
+| **Đức** | Setup module WebSocket trên Spring Boot (STOMP hoặc raw). Test bắn/nhận message đơn giản | Dùng Postman/wscat gửi message thấy server echo lại |
+
+✅ **Checkpoint:** Server chạy + App chạy + Retrofit sẵn sàng + WebSocket echo.
+
+---
+
+#### 🏃 Sprint 2 — API cốt lõi (Tuần 2)
+> Mục tiêu: Backend có API thật để FE bắt đầu gọi.
+
+| Thành viên | Việc cần làm | Output kiểm tra |
+|---|---|---|
+| **Khai** | Bắt đầu code `ConversationActivity` (giao diện chat, xử lý bàn phím, cuộn list) | Mở màn chat thấy UI đúng, bàn phím không che |
+| **Kiên** | Viết API: `GET /api/users/me`, `GET /api/users/search`, `GET /api/users/contacts` | Dùng Postman gọi 3 endpoint trả JSON đúng |
+| **Khôi** | Viết API Backend cho Group + Friend Request. Bắt đầu code `AuthInterceptor` gắn token | API Group/Friend trả JSON, Token chèn vào Header |
+| **Đức** | Setup Firebase project, cấu hình FCM trên Server để gửi được Push test | Bấm nút test trên server → Điện thoại nhận notification |
+
+✅ **Checkpoint:** 3+ API hoạt động + Chat UI khung cơ bản + FCM test thành công.
+
+---
+
+#### 🏃 Sprint 3 — Kết nối đầu tiên (Tuần 3)
+> Mục tiêu: Mobile lần đầu tiên gọi API thật thay vì MockData.
+
+| Thành viên | Việc cần làm | Output kiểm tra |
+|---|---|---|
+| **Khai** | Code `MessageAdapter` phân biệt tin gửi/nhận, text/image. Code giao diện gửi tin nhắn | Mở chat, thấy bong bóng 2 bên đúng màu |
+| **Kiên** | Viết API: `GET /api/conversations`, `POST /api/messages`. **(Mobile)** Bắt đầu học cách tạo file XML layout | API chat hoạt động, biết tạo XML cơ bản |
+| **Khôi** | Hoàn thiện Token refresh flow. **(Mobile)** Học `RecyclerView` + `Adapter` pattern | Token tự renew khi hết hạn, hiểu RecyclerView |
+| **Đức** | **(Mobile)** Tạo `WebSocketClient` trên Android kết nối tới server. Nhận được event test | App log ra "Connected" + nhận message từ server |
+
+✅ **Checkpoint:** App gọi API thật lần đầu + WebSocket Client kết nối + MessageAdapter render.
+
+---
+
+#### 🏃 Sprint 4 — Ghép Mobile (Tuần 4)
+> Mục tiêu: 3 bạn Backend bắt đầu code phần Mobile của mình.
+
+| Thành viên | Việc cần làm | Output kiểm tra |
+|---|---|---|
+| **Khai** | Code Camera/Gallery Intent chọn ảnh. Nén Bitmap và gửi Multipart lên server | Chụp ảnh → thấy ảnh xuất hiện trong chat |
+| **Kiên** | **(Mobile)** Thiết kế `fragment_my_profile.xml`. Tạo `ProfileViewModel`, gọi `GET /api/users/me` | Mở tab Hồ sơ, thấy tên + SĐT lấy từ server |
+| **Khôi** | **(Mobile)** Code `ContactsFragment` + `ContactAdapter`. Gọi API lấy danh sách bạn bè | Mở tab Danh bạ, thấy list bạn bè từ server |
+| **Đức** | **(Mobile)** Tích hợp FCM trên Android nhận Push khi app chạy ngầm. Code `ChatListFragment` | Tắt app, nhận notification. List chat hiển thị |
+
+✅ **Checkpoint:** 4/4 thành viên đều có output Mobile chạy trên máy thật.
+
+---
+
+#### 🏃 Sprint 5 — Hoàn thiện tính năng (Tuần 5)
+> Mục tiêu: Mỗi người hoàn thiện nốt phần Mobile + fix bug.
+
+| Thành viên | Việc cần làm | Output kiểm tra |
+|---|---|---|
+| **Khai** | Tích hợp Glide load ảnh URL. Thêm animation chuyển trang, skeleton loading | Ảnh load mượt, chuyển trang có hiệu ứng |
+| **Kiên** | **(Mobile)** Ghép nút "Lưu" trên Profile gọi `PUT`. Xử lý ProgressBar + Toast thành công/lỗi | Sửa tên → bấm Lưu → thấy xoay → Toast thành công |
+| **Khôi** | **(Mobile)** Code `FriendRequestActivity`. Thêm SwipeRefreshLayout + Empty State cho danh bạ | Kéo làm mới thấy loading, danh sách trống có thông báo |
+| **Đức** | **(Mobile)** Ghép "Đang gõ..." + "Trực tuyến". Cập nhật `ChatListFragment` đẩy chat mới lên đầu | Gõ ở máy A → máy B hiện "Đang gõ...", chat mới nhảy lên trên |
+
+✅ **Checkpoint:** Tất cả tính năng chính hoạt động end-to-end.
+
+---
+
+#### 🏃 Sprint 6 — Polish & Nộp bài (Tuần 6)
+> Mục tiêu: Sửa bug, test toàn diện, chuẩn bị báo cáo.
+
+| Thành viên | Việc cần làm | Output kiểm tra |
+|---|---|---|
+| **Khai** | Setup Room Database lưu cache offline. Fix bug tổng, review code cả nhóm | Tắt mạng vẫn thấy tin nhắn cũ |
+| **Kiên** | Deploy server lên môi trường test. Viết tài liệu API cho nhóm | Server chạy ổn định, có docs API |
+| **Khôi** | Test toàn bộ luồng Token (login → expired → refresh → logout). Fix edge cases | Đăng nhập/Đăng xuất mượt, token không bị lỗi |
+| **Đức** | Test WebSocket reconnect khi mất mạng. Test FCM đa thiết bị | Mất mạng → có mạng lại tự kết nối, 2 máy đều nhận noti |
+
+✅ **Checkpoint cuối:** App chạy ổn trên 2+ thiết bị, demo được luồng đầy đủ, sẵn sàng nộp bài.
 
 ---
 
@@ -213,6 +346,72 @@ Cú pháp: `[thẻ]: [nội dung mô tả]`
 *   `chore: update thư viện Glide lên ver 4` (Các việc lặt vặt build/thư viện)
 
 **🔥 LUÔN NHỚ:** Nếu lỡ bị Conflict, bình tĩnh báo anh em mở Android Studio (Phần Git) lên Resolve từng dòng một, không dùng lệnh bậy ép gộp văng mất đồ án nhé! Thắng bại tại kỹ năng Git!
+
+### 3.4. Ví dụ thực tế: Khai làm Sprint 2 — ConversationActivity
+
+> Tình huống: Sáng thứ Hai, Khai mở máy lên bắt đầu Sprint 2. Nhiệm vụ tuần này là code giao diện chat `ConversationActivity`.
+
+**Bước 1: Lấy code mới nhất từ develop**
+```bash
+git checkout develop
+git pull origin develop
+```
+> 💡 Luôn pull trước khi bắt đầu để tránh conflict do bạn khác đã merge code mới vào cuối tuần trước.
+
+**Bước 2: Tạo nhánh tính năng riêng**
+```bash
+git checkout -b feature/khai-conversation-ui
+```
+> 💡 Quy tắc đặt tên: `feature/[tên mình]-[mô tả ngắn]`. Không dùng tiếng Việt có dấu.
+
+**Bước 3: Code (chia nhỏ commit rõ ràng)**
+
+Sau khi code xong phần layout XML:
+```bash
+git add app/src/main/res/layout/activity_conversation.xml
+git commit -m "feat(chat): tạo layout XML cho màn hình chat"
+```
+
+Sau khi code xong logic Java xử lý bàn phím:
+```bash
+git add app/src/main/java/com/threek/whatsapp/view/activity/ConversationActivity.java
+git commit -m "feat(chat): xử lý bàn phím không che tin nhắn cuối"
+```
+
+Fix 1 bug nhỏ phát hiện trong quá trình code:
+```bash
+git add .
+git commit -m "fix(chat): sửa lỗi crash khi mở chat mà conversation rỗng"
+```
+
+> 💡 **Mẹo:** Commit thường xuyên, mỗi commit chỉ làm 1 việc. Đừng gom hết 500 dòng vào 1 commit "update code".
+
+**Bước 4: Push nhánh lên GitHub**
+```bash
+git push origin feature/khai-conversation-ui
+```
+
+**Bước 5: Tạo Pull Request (PR)**
+1. Lên GitHub, thấy banner vàng "Compare & pull request" → Bấm vào.
+2. Chọn merge vào nhánh `develop` (KHÔNG PHẢI `main`).
+3. Viết mô tả ngắn: *"Sprint 2: Hoàn thiện UI ConversationActivity, xử lý bàn phím + cuộn mượt"*.
+4. Assign người review (ví dụ tag Kiên hoặc Khôi).
+5. Đợi được approve → Bấm **Merge pull request**.
+
+**Bước 6: Dọn dẹp sau khi merge**
+```bash
+git checkout develop
+git pull origin develop
+git branch -d feature/khai-conversation-ui
+```
+> 💡 Xóa nhánh cũ cho sạch. Tuần sau lại tạo nhánh mới cho Sprint 3.
+
+**Tổng kết lịch sử commit của Khai tuần này sẽ nhìn như thế này:**
+```
+* fix(chat): sửa lỗi crash khi mở chat mà conversation rỗng
+* feat(chat): xử lý bàn phím không che tin nhắn cuối
+* feat(chat): tạo layout XML cho màn hình chat
+```
 
 ---
 *Chúc đội 4 người thành công và được điểm tối đa với môn Lập trình di động!* 🚀
